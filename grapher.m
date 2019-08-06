@@ -18,11 +18,13 @@ t = t';
 % xlabel('t')
 
 
-% DHO dissipation
-semilogy(t, log(z2(:,1)) + gamma * t(:));
-title('DHO dissipation')
-ylabel('d(t)')
-xlabel('t')
+% Damped Harmonic Oscillator Dissipation,
+% See Fig. 3, Bhatt Floyd Moore '16 J. Sci. Comput
+% % Expect to stay near 0 for S-P methods.
+% plot(t, log(abs(z2(:,1))) + gamma * t(:));
+% title('DHO dissipation')
+% ylabel('d(t)')
+% xlabel('t')
 
 % abs error
 %semilogy(t, abs(u2(:,1) - actual), 'DisplayName', '1s');
