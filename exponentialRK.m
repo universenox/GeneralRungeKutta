@@ -25,7 +25,7 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, A_t, b_t, phi_t, 
       k_prev = zeros(stages, dim);
       
       % initiate stage values with a "good guess"
-      Ftz = N(time(i), sol(i,:))' - gamma(time(i)) * sol(i,:); % f(t,z) evaluated at the previous timestep
+      Ftz = N(time(i), sol(i,:)) - gamma(time(i)) * sol(i,:)'; % f(t,z) evaluated at the previous timestep
       function_calls(i) = function_calls(i) + 1;
       for j = 1:stages
         k_prev(j,:) = Ftz;
@@ -46,7 +46,7 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, A_t, b_t, phi_t, 
       for j = 1:stages
           sum_part = sum_part + b(j) * k(j,:);
       end
-      sol(i+1,:) = phi0 * sol(i,:) + h * sum_part;
+      sol(i+1,:) = phi0 * sol(i,:)' + h * sum_part';
   end
 end
 
