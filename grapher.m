@@ -3,15 +3,14 @@ clf
 t = t0:h:tf;
 t = t';
 
-% exact
-% B = sqrt(w^2 - gamma^2);
-% A = @(t) [cos(B * t) + gamma/B * sin(B * t), 1/B * sin(B * t);
-%           -w^2 / B * sin(B*t), cos(B * t) - gamma/B * sin(B*t)];
+% % exact
+% B = @(t) sqrt(w^2 - gamma(t)^2);
+% A = @(t) [cos(B(t) * t) + gamma(t)/B(t) * sin(B(t) * t), 1/B(t) * sin(B(t) * t);
+%           -w^2 / B(t) * sin(B(t)*t), cos(B(t) * t) - gamma(t)/B(t) * sin(B(t)*t)];
 % qp = zeros(size(z2));
 % for i = 1 : size(t,1)
-%     qp(i,:) = exp(-gamma * t(i)) * A(t(i)) * z0';
+%     qp(i,:) = exp(-gamma(t(i)) * t(i)) * A(t(i)) * z0';
 % end
-% qp = exp(a(t) .* t) ./ b(t) .* sin(b(t) .* t);
 % plot(t, qp(:,1) - z2(:,1))
 % title('DHO err')
 % ylabel('err')
@@ -20,11 +19,11 @@ t = t';
 
 % Damped Harmonic Oscillator Dissipation,
 % See Fig. 3, Bhatt Floyd Moore '16 J. Sci. Comput
-% % Expect to stay near 0 for S-P methods.
-% plot(t, log(abs(z2(:,1))) + gamma * t(:));
-% title('DHO dissipation')
-% ylabel('d(t)')
-% xlabel('t')
+% Expect to stay near 0 for S-P methods.
+plot(t, log(abs(z2(:,1))) + gamma(t(:)) * t(:));
+title('DHO dissipation')
+ylabel('d(t)')
+xlabel('t')
 
 % abs error
 %semilogy(t, abs(u2(:,1) - actual), 'DisplayName', '1s');
