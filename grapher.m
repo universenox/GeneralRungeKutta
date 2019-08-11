@@ -5,14 +5,14 @@ t = t';
 
 % for Rigid body
 % seems Casimir and Energy error stays the same regardless of stages in method
-% C0 = z0(1)^2 + z0(2)^2 + z0(3)^2;
+C0 = z0(1)^2 + z0(2)^2 + z0(3)^2;
 % Cn2 = z2(:,1).^2 + z2(:,2).^2 + z2(:,3).^2;
-% 
-% Cn4 = z4(:,1).^2 + z4(:,2).^2 + z4(:,3).^2;
-% plot(t,abs(Cn2 - C0*ones(size(Cn4))), 'DisplayName', 'E_n');
-% title('Casimir Error, C(z) = z_1^2 + z_2^2 + z_3^2')
-% ylabel('C(z_n) - C(z_0)')
-% xlabel('t')
+
+Cn6 = z6(:,1).^2 + z6(:,2).^2 + z6(:,3).^2;
+plot(t,abs(Cn6 - C0*exp(-.1/2 * sin(2*t(:)))), 'DisplayName', 'E_n');
+title('Casimir Error, C(z) = z_1^2 + z_2^2 + z_3^2')
+ylabel('C(z_n) - C(z_0)')
+xlabel('t')
 % 
 % rigid body energy
 % H0 = 1/2 * (z0(1).^2/I1 + z0(2).^2/I2 + z0(3).^2/I3);

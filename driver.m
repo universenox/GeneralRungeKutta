@@ -1,13 +1,15 @@
 % driver
 
 
-% z0 = [0 1];
+
 
 % z(1) = q, z(2) = p
 
 % DHO
+% t0 = 0; tf = 200;
+% z0 = [0 1];
 % h = 0.25;
-% zdot = N(z(t)) - gamma(t) * z(t)
+% % zdot = N(z(t)) - gamma(t) * z(t)
 % w = 1;
 % gamma = @(t) 0.005;
 % intgamma = @(a,b) .005 * (b - a); % integral of gamma from a to b
@@ -27,30 +29,30 @@
 % 3D systems are WIP.
 % Lotka Volterra 3d System
 %PARAMETER VALUES
-z0 = [.1 .2 .05];
-h = 1;
-a = 1; b = 1; c = 1; alpha = 0.02; beta = 0.015; delta = 0.0001;
-%G = [beta-delta;delta-alpha;alpha-beta] 
-G = [0.025;-0.02;0.01];
+% z0 = [.1 .2 .05];
+% h = 1;
+% a = 1; b = 1; c = 1; % alpha = 0.02; beta = 0.015; delta = 0.0001;
+% %G = [beta-delta;delta-alpha;alpha-beta] 
+% % G = [0.025;-0.02;0.01];
 % G = 0.004*[1 1 1];
-M = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
-J = diag(G);
-N = @(tn,z) M(z)*[1;1;1];
-gamma = @(tn) J;
-intgamma = @(a,b) J * (b-a);
+% M = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
+% J = diag(G);
+% N = @(tn,z) M(z)*[1;1;1];
+% gamma = @(tn) J;
+% intgamma = @(a,b) J * (b-a);
 
-% % Rigid Body 3D System
-% z0 = [cos(1.1),0,sin(1.1)];
-% h=.3;
-% t0 = 0;
-% tf = 30;
-% I1 = 2; I2 = 1; I3 = 2/3;
-% M = @(z) [0, z(3)/I3, -z(2)/I2;
-%     -z(3)/I3 0 z(1)/I1;
-%     z(2)/I2 -z(1)/I1 0];
-% gamma = @(t) 1e-10/2 * cos(2 * t);
-% intgamma = @(a,b) 1e-10/4 * sin(2*t);
-% N = @(tn,z) M(z) * z';
+% Rigid Body 3D System
+z0 = [cos(1.1),0,sin(1.1)];
+h=.5;
+t0 = 0;
+tf = 1000;
+I1 = 2; I2 = 1; I3 = 2/3;
+M = @(z) [0, z(3)/I3, -z(2)/I2;
+    -z(3)/I3 0 z(1)/I1;
+    z(2)/I2 -z(1)/I1 0];
+gamma = @(t) .1/2 * cos(2 * t);
+intgamma = @(a,b) .1/4 * (sin(2*b) - sin(2*a));
+N = @(tn,z) M(z) * z';
 
 % below are the butcher-like tableaus used to in the SP-ERK method. See
 % "Structure-Preserving Exponential Runge-Kutta Methods" 
@@ -82,9 +84,9 @@ phi6 = @(tn) [exp(-intgamma(tn, tn + c6(1)*h)), exp(-intgamma(tn,tn+c6(2)*h)), e
 phi06 = @(tn) exp(-intgamma(tn, tn + h));
 
 
-[~, z2, ~] = exponentialRK(N, gamma, A2, b2, phi2, phi02, [t0 tf], z0, h);
-[~, z4, ~] = exponentialRK(N, gamma, A4, b4, phi4, phi04, [t0 tf], z0, h);
-% [~, z6, ~] = exponentialRK(N, gamma, A6, b6, phi6, phi06, [t0 tf], z0, h);
+% [~, z2, ~] = exponentialRK(N, gamma, A2, b2, phi2, phi02, [t0 tf], z0, h);
+% [~, z4, ~] = exponentialRK(N, gamma, A4, b4, phi4, phi04, [t0 tf], z0, h);
+[~, z6, ~] = exponentialRK(N, gamma, A6, b6, phi6, phi06, [t0 tf], z0, h);
 
 
 hs = [.01:.01:.1]; % we'll try these h's to make our graphs w.r.t step size

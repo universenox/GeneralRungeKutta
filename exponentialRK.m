@@ -11,7 +11,7 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, A_t, b_t, phi_t, 
   sol      = zeros(steps, dim);
   sol(1,:) = z0;
   %function_calls = 0; % used to count how many times f(x) is called
-  epsilon = 1e-13;
+  epsilon = 1e-16;
 
   % TODO: Check that all input satisfy the criteria needed, e.g., sum b_i = 1
   
