@@ -1,16 +1,28 @@
 clf
 
-% Rigid Body 3D
-I1 = 2; I2 = 1; I3 = 2/3; eps = .1;
-% plot3(u2(:,1),u2(:,2),u2(:,3))
-H = @(z) 1/2 * (z(1)^2/I1 + z(2)^2/I2 + z(3)^2/I3);
-Cs = @(z) z(:,1).^2 + z(:,2).^2 + z(:,3).^2;
-Hs = @(z) 1/2 * (z(:,1).^2/I1 + z(:,2).^2/I2 + z(:,3).^2/I3);
+% Lotka-Volterra 3D
+C = @(z) log(z(1)) + log(z(2)) + log(z(3));
+dCdt = zeros(size(t));
 
-figure(1)
+for i = 2:size(t,1)
+   dCdt(i) = (C(z4(i,:)) - C(z4(i-1,:))) / h;
+end
+C0 = C(z0);
 
-plot(t, Hs(z2) - H0 * exp(-eps/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
-plot(t, Cs(z2) - C0 * exp(-eps/2 * sin(2*t(:))), 'DisplayName', 'C err');
+plot(t(2:size(t,1)),dCdt(2:size(t,1)), 'DisplayName', 'casimir deriv');
+
+
+% % Rigid Body 3D
+% I1 = 2; I2 = 1; I3 = 2/3; eps = .1;
+% % plot3(u2(:,1),u2(:,2),u2(:,3))
+% H = @(z) 1/2 * (z(1)^2/I1 + z(2)^2/I2 + z(3)^2/I3);
+% Cs = @(z) z(:,1).^2 + z(:,2).^2 + z(:,3).^2;
+% Hs = @(z) 1/2 * (z(:,1).^2/I1 + z(:,2).^2/I2 + z(:,3).^2/I3);
+% 
+% figure(1)
+% 
+% plot(t, Hs(z2) - H0 * exp(-eps/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
+% plot(t, Cs(z2) - C0 * exp(-eps/2 * sin(2*t(:))), 'DisplayName', 'C err');
 
 % abs error
 % semilogy(t, abs(u2(:,1) - actual), 'DisplayName', '1s');

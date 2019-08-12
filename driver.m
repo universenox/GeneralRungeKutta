@@ -5,7 +5,7 @@
 % hs = [.01:.01:.1];
 % t0 = 0;
 % tf = 1000;
-f = @func;
+% f = @func;
 % err_step = zeros(3,size(hs, 2)); % 3 methods stages 1,2,3, and n step sizes
 
 % for gauss-legendre, there's an order of accuracy of 2s, 
@@ -33,33 +33,37 @@ b4 = [(1/2) (1/2)];
 % z'' = - omega^2 sin(z). zdot = [z', v']. z(1) = z. z(2) = v (pendulum)
 % zdot = [z(2); -sin(z(1))];
 
-% % Lotka Volterra 3d System
-% %PARAMETER VALUES
-% a = 1; b = 1; c = 1; alpha = 0.02; beta = 0.015; delta = 0.0001;
-% %G = [beta-delta;delta-alpha;alpha-beta]
-% G = [0.025;-0.02;0.0001];
-% 
-% M = [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
-% J = diag(G);
-% 
-% zdot = M*[1;1;1] -J*z;
+% % Rigid Body 3D System
+% z0 = [cos(1.1),0,sin(1.1)];
+% h=.25;
+% t0 = 0; tf = 100;
+% I1 = 2; I2 = 1; I3 = 2/3; eps = .1;
+% M = @(z) [0, z(3)/I3, -z(2)/I2;
+%     -z(3)/I3 0 z(1)/I1;
+%     z(2)/I2 -z(1)/I1 0];
+% gamma = @(t) eps/2 * cos(2 * t);
+% intgamma = @(a,b) eps/4 * (sin(2*b) - sin(2*a));
+% N = @(tn,z) M(z) * z';
+% zdot = @(tn,z) N(tn,z) - gamma(tn) * z';
 
+% Lotka Volterra 3d System
+z0 = [.1 .01 .001];
+h=.5;
+t0 = 0; tf = 500;
+%PARAMETER VALUES
+a = 1; b = a; c = a; % alpha = 0.02; beta = 0.015; delta = 0.0001;
+%G = [beta-delta;delta-alpha;alpha-beta]
+G = [0.025;-0.02;0.0001];
 
-% Rigid Body 3D System
-z0 = [cos(1.1),0,sin(1.1)];
-h=.25;
-t0 = 0; tf = 100;
-I1 = 2; I2 = 1; I3 = 2/3; eps = .1;
-M = @(z) [0, z(3)/I3, -z(2)/I2;
-    -z(3)/I3 0 z(1)/I1;
-    z(2)/I2 -z(1)/I1 0];
-gamma = @(t) eps/2 * cos(2 * t);
-intgamma = @(a,b) eps/4 * (sin(2*b) - sin(2*a));
-N = @(tn,z) M(z) * z';
-zdot = @(tn,z) N(tn,z) - gamma(tn) * z';
+B1 = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
+% B2 = [0 -1 1; 1 0 -1; -1 1 0];
+% H2 = @(z) = z(1) * z(2) * z(3);
+J = diag(G);
+
+zdot = @(tn,z) B1(z)*[1;1;1] -J*z';
 
 [t, z2, fc] = implicitRK(zdot, A2, b2, [t0 tf], z0, h);
-% [t, z4, fc] = implicitRK(f, A4, b4, [t0 tf], z0, h);
+[t, z4, fc] = implicitRK(zdot, A4, b4, [t0 tf], z0, h);
 
 % for i = 1 : size(hs,2)
 %     h = hs(i);
