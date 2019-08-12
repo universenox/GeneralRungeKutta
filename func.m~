@@ -1,0 +1,39 @@
+% This must return a column vector corresponding to f(t,u)
+
+function [udot] = func(t,u)
+if size(z,1) == 1 && size(z,2) > 1
+    z = z';
+end
+
+% z'' = -z. z(1) = z, z(2) = v, zdot = [z', v']
+% z = cos(t)
+% zdot = [z(2); -z(1)]; 
+
+% z'' = - omega^2 sin(z). zdot = [z', v']. z(1) = z. z(2) = v (pendulum)
+% zdot = [z(2); -sin(z(1))];
+
+% % Lotka Volterra 3d System
+% %PARAMETER VALUES
+% a = 1; b = 1; c = 1; alpha = 0.02; beta = 0.015; delta = 0.0001;
+% %G = [beta-delta;delta-alpha;alpha-beta]
+% G = [0.025;-0.02;0.0001];
+% 
+% M = [0 a*u(1)*u(2) -b*u(1)*u(3); -a*u(1)*u(2) 0 c*u(2)*u(3); b*u(1)*u(3) -c*u(2)*u(3) 0];
+% J = diag(G);
+% 
+% udot = M*[1;1;1] -J*u;
+
+% Rigid Body 3D System
+z0 = [cos(1.1),0,sin(1.1)];
+h=.5;
+t0 = 0;
+tf = 1000;
+I1 = 2; I2 = 1; I3 = 2/3;
+M = @(z) [0, z(3)/I3, -z(2)/I2;
+    -z(3)/I3 0 z(1)/I1;
+    z(2)/I2 -z(1)/I1 0];
+gamma = @(t) .1/2 * cos(2 * t);
+intgamma = @(a,b) .1/4 * (sin(2*b) - sin(2*a));
+N = @(tn,z) M(z) * z';
+
+end

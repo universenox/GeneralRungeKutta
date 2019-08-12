@@ -83,6 +83,6 @@ function [sol] = zerofxn(f, tn, un, h, A, c, vk, dim, stages)
             sum = sum + A(i,j) * k(j,:);
         end          
        %vec = ;
-       sol(1+(i-1)*dim:i*dim,1) = f(tn + c(i)*h, un' + h * sum') - k(i,:)';
+       sol(1+(i-1)*dim:i*dim,1) = f(tn + c(i)*h, un + h * sum) - k(i,:)';
     end
 end
