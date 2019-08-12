@@ -44,11 +44,11 @@ b4 = [(1/2) (1/2)];
 % 
 % zdot = M*[1;1;1] -J*z;
 
-% Rigid Body
+
+% Rigid Body 3D System
 z0 = [cos(1.1),0,sin(1.1)];
 h=.25;
 t0 = 0; tf = 100;
-% Rigid Body 3D System
 I1 = 2; I2 = 1; I3 = 2/3; eps = .1;
 M = @(z) [0, z(3)/I3, -z(2)/I2;
     -z(3)/I3 0 z(1)/I1;
