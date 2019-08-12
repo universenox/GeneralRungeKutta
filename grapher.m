@@ -3,6 +3,17 @@ clf
 t = t0:h:tf;
 t = t';
 
+% Lotka-Volterra 3D
+C = @(z) log(z(1)) + log(z(2)) + log(z(3));
+dCdt = zeros(size(t));
+
+for i = 2:size(t,1)
+   dCdt(i) = (C(z4(i,:)) - C(z4(i-1,:))) / h;
+end
+C0 = C(z0);
+
+plot(t(2:size(t,1)),dCdt(2:size(t,1)), 'DisplayName', 'casimir deriv');
+
 % % Rigid Body 3D
 % I1 = 2; I2 = 1; I3 = 2/3;
 % % plot3(u2(:,1),u2(:,2),u2(:,3))

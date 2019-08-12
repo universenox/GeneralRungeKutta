@@ -24,18 +24,22 @@
 
 % 3D systems are WIP.
 % Lotka Volterra 3d System
+z0 = [.1 .01 .001];
+h=.5;
+t0 = 0; tf = 500;
 %PARAMETER VALUES
-% z0 = [.1 .2 .05];
-% h = 1;
-% a = 1; b = 1; c = 1; % alpha = 0.02; beta = 0.015; delta = 0.0001;
-% %G = [beta-delta;delta-alpha;alpha-beta] 
-% % G = [0.025;-0.02;0.01];
-% G = 0.004*[1 1 1];
-% M = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
-% J = diag(G);
-% N = @(tn,z) M(z)*[1;1;1];
-% gamma = @(tn) J;
-% intgamma = @(a,b) J * (b-a);
+a = 1; b = a; c = a; % alpha = 0.02; beta = 0.015; delta = 0.0001;
+%G = [beta-delta;delta-alpha;alpha-beta]
+G = [0.025;-0.02;0.0001];
+
+B1 = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
+% B2 = [0 -1 1; 1 0 -1; -1 1 0];
+% H2 = @(z) = z(1) * z(2) * z(3);
+J = diag(G);
+
+N = @(tn,z) B1(z)*[1;1;1];
+gamma = @(tn) J;
+intgamma = @(a,b) J * (b-a);
 
 % % Rigid Body 3D System
 % z0 = [cos(1.1),0,sin(1.1)];
