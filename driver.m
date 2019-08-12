@@ -1,10 +1,6 @@
 % driver
 
-
-
-
-% z(1) = q, z(2) = p
-
+% --------------------------- various systems ---------------------------%
 % DHO
 % t0 = 0; tf = 200;
 % z0 = [0 1];
@@ -41,38 +37,35 @@
 % gamma = @(tn) J;
 % intgamma = @(a,b) J * (b-a);
 
-% Rigid Body 3D System
-z0 = [cos(1.1),0,sin(1.1)];
-h=.5;
-t0 = 0;
-tf = 1000;
-I1 = 2; I2 = 1; I3 = 2/3;
-M = @(z) [0, z(3)/I3, -z(2)/I2;
-    -z(3)/I3 0 z(1)/I1;
-    z(2)/I2 -z(1)/I1 0];
-gamma = @(t) .1/2 * cos(2 * t);
-intgamma = @(a,b) .1/4 * (sin(2*b) - sin(2*a));
-N = @(tn,z) M(z) * z';
+% % Rigid Body 3D System
+% z0 = [cos(1.1),0,sin(1.1)];
+% h=.5;
+% t0 = 0; tf = 250;
+% I1 = 2; I2 = 1; I3 = 2/3; epsilon = .1;
+% M = @(z) [0, z(3)/I3, -z(2)/I2;
+%     -z(3)/I3 0 z(1)/I1;
+%     z(2)/I2 -z(1)/I1 0];
+% gamma = @(t) epsilon/2 * cos(2 * t);
+% intgamma = @(a,b) epsilon/4 * (sin(2*b) - sin(2*a));
+% N = @(tn,z) M(z) * z';
 
-% below are the butcher-like tableaus used to in the SP-ERK method. See
-% "Structure-Preserving Exponential Runge-Kutta Methods" 
-% Bhatt, Moore, SIAM J. Sci. Comput. '17 for details
+% ------------------------------ butcher tableaus ------------------------%
 
 % one stage
 c2 = [1/2];
 A2 = @(tn) [1/2];
-b2 = @(tn) [exp(-gamma(tn) * (h/2))];
-phi2 = @(tn) [exp(-gamma(tn) * (h/2))];
-phi02 = @(tn) [exp(-gamma(tn) * h)];
+b2 = @(tn) [exp(-intgamma(tn + c2(1)*h, tn + h))];
+phi2 = @(tn) [exp(-intgamma(tn, tn + c2(1)*h))];
+phi02 = @(tn) [exp(-intgamma(tn, tn + h))];
 
 %two stage
 c4 = [1/2 - sqrt(3)/6; 1/2 + sqrt(3)/6];
-A4 = @(tn) [[1/4, (1/4 - sqrt(3)/6)*exp(sqrt(3)/3 * gamma(tn)*h)]
-            [(1/4 + sqrt(3)/6)*exp(-sqrt(3)/3 * gamma(tn)*h), 1/4]];
-b4 = @(tn) [(1/2) * exp(-(1/2 + sqrt(3)/6) * gamma(tn) * h), (1/2) * exp(-(1/2 - sqrt(3)/6) * gamma(tn) * h)];
-phi4 = @(tn) [[exp(-(1/2 - sqrt(3)/6) * gamma(tn) * h)]
-              [exp(-(1/2 + sqrt(3)/6) * gamma(tn) * h)]];
-phi04 = @(tn) [exp(-gamma(tn)*h)];
+A4 = @(tn) [1/4, (1/4 - sqrt(3)/6)*exp(intgamma(tn + c4(1)*h, tn + c4(2)*h));
+            (1/4 + sqrt(3)/6)*exp(intgamma(tn + c4(2)*h, tn + c4(1)*h)), 1/4];
+b4 = @(tn) [(1/2) * exp(-intgamma(tn + c4(1)*h, tn + h)), (1/2) * exp(-intgamma(tn + c4(2)*h, tn + h))];
+phi4 = @(tn) [[exp(-intgamma(tn, tn + c4(1)*h))]
+              [exp(-intgamma(tn, tn + c4(2)*h))]];
+phi04 = @(tn) [exp(-intgamma(tn, tn + h))];
 
 % three stage
 c6 = [1/2 - sqrt(15)/10; 1/2; 1/2 + sqrt(15)/10];
@@ -83,9 +76,10 @@ b6 = @(tn) [(5/18)*exp(-intgamma(tn + c6(1) * h, tn + h)), (4/9)*exp(-intgamma(t
 phi6 = @(tn) [exp(-intgamma(tn, tn + c6(1)*h)), exp(-intgamma(tn,tn+c6(2)*h)), exp(-intgamma(tn, tn+c6(3)*h))];
 phi06 = @(tn) exp(-intgamma(tn, tn + h));
 
+% ----------------------------- evaluation -------------------------------%
 
-% [~, z2, ~] = exponentialRK(N, gamma, A2, b2, phi2, phi02, [t0 tf], z0, h);
-% [~, z4, ~] = exponentialRK(N, gamma, A4, b4, phi4, phi04, [t0 tf], z0, h);
+[~, z2, ~] = exponentialRK(N, gamma, A2, b2, phi2, phi02, [t0 tf], z0, h);
+[~, z4, ~] = exponentialRK(N, gamma, A4, b4, phi4, phi04, [t0 tf], z0, h);
 [~, z6, ~] = exponentialRK(N, gamma, A6, b6, phi6, phi06, [t0 tf], z0, h);
 
 

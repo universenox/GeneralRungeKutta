@@ -3,24 +3,36 @@ clf
 t = t0:h:tf;
 t = t';
 
-% for Rigid body
-% seems Casimir and Energy error stays the same regardless of stages in method
-C0 = z0(1)^2 + z0(2)^2 + z0(3)^2;
-% Cn2 = z2(:,1).^2 + z2(:,2).^2 + z2(:,3).^2;
-
-Cn6 = z6(:,1).^2 + z6(:,2).^2 + z6(:,3).^2;
-plot(t,abs(Cn6 - C0*exp(-.1/2 * sin(2*t(:)))), 'DisplayName', 'E_n');
-title('Casimir Error, C(z) = z_1^2 + z_2^2 + z_3^2')
-ylabel('C(z_n) - C(z_0)')
-xlabel('t')
+% % Rigid Body 3D
+% I1 = 2; I2 = 1; I3 = 2/3;
+% % plot3(u2(:,1),u2(:,2),u2(:,3))
+% H = @(z) 1/2 * (z(1)^2/I1 + z(2)^2/I2 + z(3)^2/I3);
+% Cs = @(z) z(:,1).^2 + z(:,2).^2 + z(:,3).^2;
+% Hs = @(z) 1/2 * (z(:,1).^2/I1 + z(:,2).^2/I2 + z(:,3).^2/I3);
+% H0 = Hs(z0);
+% C0 = Cs(z0);
 % 
-% rigid body energy
-% H0 = 1/2 * (z0(1).^2/I1 + z0(2).^2/I2 + z0(3).^2/I3);
-% Hn2 = 1/2 * (z2(:,1).^2/I1 + z2(:,2).^2/I2 + z2(:,3).^2/I3);
-% Hn4 = 1/2 * (z4(:,1).^2/I1 + z4(:,2).^2/I2 + z4(:,3).^2/I3);
-% plot(t, abs(Hn4 - H0 * ones(size(Hn2))), 'DisplayName', '\epsilon_n');
+% figure(1); clf;
+% plot(t, Hs(z2) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
+% plot(t, Cs(z2) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
+% title('2nd order')
+% xlabel('t'); legend;
+% 
+% figure(2); clf;
+% plot(t, Hs(z4) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
+% plot(t, Cs(z4) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
+% title('4th order,')
+% xlabel('t'); legend;
+% 
+% figure(3); clf;
+% plot(t, Hs(z6) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
+% plot(t, Cs(z6) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
+% title('6th order')
+% xlabel('t'); legend;
 
-% % exact
+
+
+% % exact DHO
 % B = @(t) sqrt(w^2 - gamma(t)^2);
 % A = @(t) [cos(B(t) * t) + gamma(t)/B(t) * sin(B(t) * t), 1/B(t) * sin(B(t) * t);
 %           -w^2 / B(t) * sin(B(t)*t), cos(B(t) * t) - gamma(t)/B(t) * sin(B(t)*t)];
@@ -47,7 +59,7 @@ xlabel('t')
 %semilogy(t, abs(u4(:,1) - actual), 'DisplayName', '2s');
 %title('abs err, implicitRK')
 %ylabel('abs err')
-%xlabel('t')
+%xlabel('t')legend
 
 % plot(t, u2(:,1))
 % hold on
@@ -71,4 +83,3 @@ xlabel('t')
 % ylabel('local abs error /h')
 % xlabel('h')
 
-legend
