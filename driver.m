@@ -22,24 +22,41 @@
 % fd = 4.7;
 % N = @(tn, z) [z(2) + gamma(tn) * z(1); -a^2*sin(z(1)) + fd*sin(tn)-gamma(tn)*z(2)];
 
-% 3D systems are WIP.
-% Lotka Volterra 3d System
-z0 = [.1 .01 .001];
-h=.5;
-t0 = 0; tf = 500;
-%PARAMETER VALUES
-a = 1; b = a; c = a; % alpha = 0.02; beta = 0.015; delta = 0.0001;
-%G = [beta-delta;delta-alpha;alpha-beta]
-G = [0.025;-0.02;0.0001];
+% 3D systems are WIP.% % Lotka Volterra 3d System
+% z0 = [.1 .01 .001];
+% h=.5;
+% t0 = 0; tf = 500; t = t0:h:tf;
+% %PARAMETER VALUES
+% a = 1; b = a; c = a; % alpha = 0.02; beta = 0.015; delta = 0.0001;
+% %G = [beta-delta;delta-alpha;alpha-beta]
+% G = [0.025;-0.02;0.0001];
+% 
+% B1 = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
+% % B2 = [0 -1 1; 1 0 -1; -1 1 0];
+% % H2 = @(z) = z(1) * z(2) * z(3);
+% J = diag(G);
+% 
+% N = @(tn,z) B1(z)*[1;1;1];
+% gamma = @(tn) J;
+% intgamma = @(a,b) J * (b-a);
 
-B1 = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
-% B2 = [0 -1 1; 1 0 -1; -1 1 0];
-% H2 = @(z) = z(1) * z(2) * z(3);
-J = diag(G);
-
-N = @(tn,z) B1(z)*[1;1;1];
-gamma = @(tn) J;
-intgamma = @(a,b) J * (b-a);
+% % Lotka Volterra 3d System
+% z0 = [.1 .01 .001];
+% h=.5;
+% t0 = 0; tf = 500; t = t0:h:tf;
+% %PARAMETER VALUES
+% a = 1; b = a; c = a; % alpha = 0.02; beta = 0.015; delta = 0.0001;
+% %G = [beta-delta;delta-alpha;alpha-beta]
+% G = [0.025;-0.02;0.0001];
+% 
+% B1 = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
+% % B2 = [0 -1 1; 1 0 -1; -1 1 0];
+% % H2 = @(z) = z(1) * z(2) * z(3);
+% J = diag(G);
+% 
+% N = @(tn,z) B1(z)*[1;1;1];
+% gamma = @(tn) J;
+% intgamma = @(a,b) J * (b-a);
 
 % % Rigid Body 3D System
 % z0 = [cos(1.1),0,sin(1.1)];
@@ -53,42 +70,43 @@ intgamma = @(a,b) J * (b-a);
 % intgamma = @(a,b) epsilon/4 * (sin(2*b) - sin(2*a));
 % N = @(tn,z) M(z) * z';
 
-% ------------------------------ butcher tableaus ------------------------%
+% PDEs
+% Damped one-way wave equation
+h = 0.025; t0 = 0; tf = 45;
+dx = 0.04;
+% u(x,0)
+m = 2;
+zx0 = @(x) cos(2*m*pi*x);
+% assume periodic boundary conditions
+% u(0, t) = u(L,t)
+xrange = 0:dx:1;
+z0 = zeros(size(xrange));
+for i = 1:size(z0,2)
+    z0(i) = zx0(xrange(i));
+end
 
-% one stage
-c2 = [1/2];
-A2 = @(tn) [1/2];
-b2 = @(tn) [exp(-intgamma(tn + c2(1)*h, tn + h))];
-phi2 = @(tn) [exp(-intgamma(tn, tn + c2(1)*h))];
-phi02 = @(tn) [exp(-intgamma(tn, tn + h))];
+n = size(z0,2);
+nOnes = ones(n,1);
+Dp = (diag(-1 * nOnes, 0) + diag(nOnes(1:n-1), 1));
+Dm = -Dp';
+ddx = (Dp + Dm) ;
+ddx(1, n) = -1;
+ddx(n,1) = 1;
+ddx = ddx * (1/(2*dx));
+N = @(tn, z) -ddx * z';
 
-%two stage
-c4 = [1/2 - sqrt(3)/6; 1/2 + sqrt(3)/6];
-A4 = @(tn) [1/4, (1/4 - sqrt(3)/6)*exp(intgamma(tn + c4(1)*h, tn + c4(2)*h));
-            (1/4 + sqrt(3)/6)*exp(intgamma(tn + c4(2)*h, tn + c4(1)*h)), 1/4];
-b4 = @(tn) [(1/2) * exp(-intgamma(tn + c4(1)*h, tn + h)), (1/2) * exp(-intgamma(tn + c4(2)*h, tn + h))];
-phi4 = @(tn) [[exp(-intgamma(tn, tn + c4(1)*h))]
-              [exp(-intgamma(tn, tn + c4(2)*h))]];
-phi04 = @(tn) [exp(-intgamma(tn, tn + h))];
+gamma = @(t) 1/2;
+intgamma = @(a,b) 1/2 * (b-a);
 
-% three stage
-c6 = [1/2 - sqrt(15)/10; 1/2; 1/2 + sqrt(15)/10];
-A6 = @(tn) [5/36, (2/9 - sqrt(15)/15) * exp(intgamma(tn + c6(1)* h,tn + c6(2) * h)), (5/36 - sqrt(15)/30) * exp(intgamma(tn + c6(1) * h, tn + c6(3) * h));
-     (5/36 + sqrt(15)/24)*exp(intgamma(tn + c6(2) * h, tn+c6(1)* h)), 2/9, (5/36 - sqrt(15)/24)*exp(intgamma(tn + c6(2) * h, tn + c6(3) * h));
-     (5/36 + sqrt(15)/30)*exp(intgamma(tn + c6(3) * h,tn + c6(1) * h)), (2/9 + sqrt(15)/15)*exp(intgamma(tn + c6(3) * h, tn + c6(2) * h)), 5/36];
-b6 = @(tn) [(5/18)*exp(-intgamma(tn + c6(1) * h, tn + h)), (4/9)*exp(-intgamma(tn + c6(2)* h, tn + h)), (5/18)*exp(-intgamma(tn + c6(3)*h, tn+ h))];
-phi6 = @(tn) [exp(-intgamma(tn, tn + c6(1)*h)), exp(-intgamma(tn,tn+c6(2)*h)), exp(-intgamma(tn, tn+c6(3)*h))];
-phi06 = @(tn) exp(-intgamma(tn, tn + h));
 
 % ----------------------------- evaluation -------------------------------%
 
-[~, z2, ~] = exponentialRK(N, gamma, A2, b2, phi2, phi02, [t0 tf], z0, h);
-[~, z4, ~] = exponentialRK(N, gamma, A4, b4, phi4, phi04, [t0 tf], z0, h);
-[~, z6, ~] = exponentialRK(N, gamma, A6, b6, phi6, phi06, [t0 tf], z0, h);
+[~, z2, ~] = exponentialRK(N, gamma, intgamma, 'GL2', [t0 tf], z0, h);
+% [~, z4, ~] = exponentialRK(N, gamma, intgamma, 'GL4', [t0 tf], z0, h);
+% [~, z6, ~] = exponentialRK(N, gamma, intgamma, 'GL6', [t0 tf], z0, h);
 
-
-hs = [.01:.01:.1]; % we'll try these h's to make our graphs w.r.t step size
-err_step = zeros(3,size(hs, 2)); % 3 methods stages 1,2,3, and n step sizes
+% hs = [.01:.01:.1]; % we'll try these h's to make our graphs w.r.t step size
+% err_step = zeros(3,size(hs, 2)); % 3 methods stages 1,2,3, and n step sizes
 % 2nd order IFRK based on implicit midpoint rule
 % for i = 1 : size(hs,2)
 %     h = hs(1,i);

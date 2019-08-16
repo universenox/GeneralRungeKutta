@@ -3,16 +3,24 @@ clf
 t = t0:h:tf;
 t = t';
 
+% Damped one-way wave equation
+% wave at 20s
+exact = @(t,x) exp(-gamma(t) * t) .* cos(2*m*pi*(x - t));
+tn = 20;
+plot(xrange, exact(tn * ones(n,1), z2(tn,:)'), 'DisplayName', 'exact at tn');
+% hold on;
+% plot(xrange, z2(tn,:), 'DisplayName', 'GL-ERK order 2');
+legend;
+
 % Lotka-Volterra 3D
-C = @(z) log(z(1)) + log(z(2)) + log(z(3));
-dCdt = zeros(size(t));
-
-for i = 2:size(t,1)
-   dCdt(i) = (C(z4(i,:)) - C(z4(i-1,:))) / h;
-end
-C0 = C(z0);
-
-plot(t(2:size(t,1)),dCdt(2:size(t,1)), 'DisplayName', 'casimir deriv');
+% C = @(z) log(z(1)) + log(z(2)) + log(z(3));
+% dCdt = zeros(size(t));
+% 
+% for i = 2:size(t,1)
+%    dCdt(i) = (C(z4(i,:)) - C(z4(i-1,:))) / h;
+% end
+% C0 = C(z0);
+% plot(t(2:size(t,1)),C(2:size(t,1)), 'DisplayName', 'casimir deriv');
 
 % % Rigid Body 3D
 % I1 = 2; I2 = 1; I3 = 2/3;
