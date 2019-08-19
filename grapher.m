@@ -4,13 +4,33 @@ t = t0:h:tf;
 t = t';
 
 % Damped one-way wave equation
+
+% movie of our solution, stepping through the time steps
+% for j = 1:size(t,1)
+%     ti = j*h;
+% %     UEx = exp(-b*x).*cos(2*pi*(x-ti));
+%     plot(xrange,z2(j,:),'ro-')%,x1,UHxi(:,j),'k+')
+%     M(j) = getframe;
+% end
+% movie(M,1,1)
+
+% Exact Solutions
+UEx = @(t) exp(-gamma(t)*t)*cos(2*m*pi*(xrange-t));
+
+plot(xrange, UEx(20), 'DisplayName', 'exact');
+hold on;
+% hold on;
+plot(xrange, z2(20/h,:), 'DisplayName', '2nd order')
+legend;
+
+
 % wave at 20s
-exact = @(t,x) exp(-gamma(t) * t) .* cos(2*m*pi*(x - t));
-tn = 20;
-plot(xrange, exact(tn * ones(n,1), z2(tn,:)'), 'DisplayName', 'exact at tn');
+% exact = @(t,x) exp(-gamma(t) * t) .* cos(2*m*pi*(x - t));
+% tn = 20;
+% plot(xrange, exact(tn * ones(n,1), z2(tn,:)'), 'DisplayName', 'exact at tn');
 % hold on;
 % plot(xrange, z2(tn,:), 'DisplayName', 'GL-ERK order 2');
-legend;
+% legend;
 
 % Lotka-Volterra 3D
 % C = @(z) log(z(1)) + log(z(2)) + log(z(3));

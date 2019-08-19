@@ -73,25 +73,23 @@
 % PDEs
 % Damped one-way wave equation
 h = 0.025; t0 = 0; tf = 45;
+a = 1/2; % is gamma
+b = 0; m = 2;
+
 dx = 0.04;
 % u(x,0)
-m = 2;
 zx0 = @(x) cos(2*m*pi*x);
 % assume periodic boundary conditions
 % u(0, t) = u(L,t)
-xrange = 0:dx:1;
-z0 = zeros(size(xrange));
-for i = 1:size(z0,2)
-    z0(i) = zx0(xrange(i));
-end
+xrange = 0:dx:1-dx;
+z0(:) = zx0(xrange(:));
 
 n = size(z0,2);
 nOnes = ones(n,1);
 Dp = (diag(-1 * nOnes, 0) + diag(nOnes(1:n-1), 1));
+Dp(n,1) = 1;
 Dm = -Dp';
 ddx = (Dp + Dm) ;
-ddx(1, n) = -1;
-ddx(n,1) = 1;
 ddx = ddx * (1/(2*dx));
 N = @(tn, z) -ddx * z';
 
