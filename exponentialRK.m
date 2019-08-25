@@ -11,7 +11,7 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
   sol      = zeros(steps, dim);
   sol(1,:) = z0;
   %function_calls = 0; % used to count how many times f(x) is called
-  epsilon = 1e-14;
+  epsilon = 1e-13;
 %   gamma_is_diag = false
 %   
 %   if (isdiag(gamma(0)))

@@ -71,31 +71,63 @@
 % N = @(tn,z) M(z) * z';
 
 % PDEs
-% Damped one-way wave equation
-h = 0.025; t0 = 0; tf = 45;
-a = 1/2; % is gamma
-b = 0; m = 2;
+% % Damped one-way wave equation
+% h = 0.025; t0 = 0; tf = 45;
+% a = 1/2; % is gamma
+% b = 0; m = 2;
+% 
+% dx = 0.04;
+% % u(x,0)
+% zx0 = @(x) cos(2*m*pi*x);
+% % assume periodic boundary conditions
+% % u(0, t) = u(L,t)
+% xrange = 0:dx:1-dx;
+% z0(:) = zx0(xrange(:));
+% 
+% % Discretization
+% n = size(z0,2);
+% nOnes = ones(n,1);
+% Dp = (diag(-1 * nOnes, 0) + diag(nOnes(1:n-1), 1));
+% Dp(n,1) = 1;
+% Dm = -Dp';
+% Dm = sparse(Dm); Dp = sparse(Dp);
+% ddx = (Dp + Dm) ;
+% ddx = ddx * (1/(2*dx));
+% 
+% N = @(tn, z) -ddx * z';
+% gamma = @(t) 1/2;
+% intgamma = @(a,b) 1/2 * (b-a);
 
-dx = 0.04;
-% u(x,0)
-zx0 = @(x) cos(2*m*pi*x);
-% assume periodic boundary conditions
-% u(0, t) = u(L,t)
-xrange = 0:dx:1-dx;
-z0(:) = zx0(xrange(:));
+% shrodinger eqn
+h = 0.01; t0 = 0; tf = 100;
+a = 0.01; w = 2;
+L = 2 * pi;
+N = 64;
+dx = L/N;
+A = 1;
 
+sol = @(t) A * exp(-a*t/2) * exp(1i*gamma(t)*abs(A)^2*((1-exp(-a*t))/a));
+phi0 = complex(sol(0));
+xrange = 0:dx:L-dx;
+z0(:,1) = phi0;
+z0(:,2) = 0;
+
+% Discretization
 n = size(z0,2);
 nOnes = ones(n,1);
 Dp = (diag(-1 * nOnes, 0) + diag(nOnes(1:n-1), 1));
 Dp(n,1) = 1;
 Dm = -Dp';
+Dm = sparse(Dm); Dp = sparse(Dp);
 ddx = (Dp + Dm) ;
 ddx = ddx * (1/(2*dx));
-N = @(tn, z) -ddx * z';
+ddx2 = Dm * Dp * 1/(dx^2);
 
-gamma = @(t) 1/2;
-intgamma = @(a,b) 1/2 * (b-a);
+% Let z = [v;w]
+gamma = @(t) a/2;
+intgamma = @(b,c) a/2 * (c-b);
 
+N = @(tn,z) ddx2 * z' .* [-1; 1] + [-z(2)*w*(z(1)^2 - z(2)^2); z(1)*w*(z(1)^2 + z(2)^2)];
 
 % ----------------------------- evaluation -------------------------------%
 

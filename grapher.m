@@ -3,34 +3,41 @@ clf
 t = t0:h:tf;
 t = t';
 
-% Damped one-way wave equation
+% Schrodinger's Eqn
+% exact solution
+sol = @(t) A * exp(-a*t/2) * exp(1i*gamma(t)*abs(A)^2*((1-exp(-a*t))/a));
 
-% movie of our solution, stepping through the time steps
+
+
+% % Damped one-way wave equation
+% % Exact Solutions
+% UEx = @(t) exp(-gamma(t)*t)*cos(2*m*pi*(xrange-t));
+% % movie of our solution, stepping through the time steps
 % for j = 1:size(t,1)
 %     ti = j*h;
 % %     UEx = exp(-b*x).*cos(2*pi*(x-ti));
+%     clf;
 %     plot(xrange,z2(j,:),'ro-')%,x1,UHxi(:,j),'k+')
+%     hold on;
+%     plot(xrange, UEx(ti))
 %     M(j) = getframe;
 % end
-% movie(M,1,1)
-
-% Exact Solutions
-UEx = @(t) exp(-gamma(t)*t)*cos(2*m*pi*(xrange-t));
-
-plot(xrange, UEx(20), 'DisplayName', 'exact');
-hold on;
-% hold on;
-plot(xrange, z2(20/h,:), 'DisplayName', '2nd order')
-legend;
-
-
-% wave at 20s
-% exact = @(t,x) exp(-gamma(t) * t) .* cos(2*m*pi*(x - t));
-% tn = 20;
-% plot(xrange, exact(tn * ones(n,1), z2(tn,:)'), 'DisplayName', 'exact at tn');
-% hold on;
-% plot(xrange, z2(tn,:), 'DisplayName', 'GL-ERK order 2');
-% legend;
+% movie(M)
+% 
+% % plot(xrange, UEx(45), 'DisplayName', 'exact');
+% % hold on;
+% % % hold on;
+% % plot(xrange, z2(45/h,:), 'DisplayName', '2nd order')
+% % legend;
+% 
+% 
+% % wave at 20s
+% % exact = @(t,x) exp(-gamma(t) * t) .* cos(2*m*pi*(x - t));
+% % tn = 20;
+% % plot(xrange, exact(tn * ones(n,1), z2(tn,:)'), 'DisplayName', 'exact at tn');
+% % hold on;
+% % plot(xrange, z2(tn,:), 'DisplayName', 'GL-ERK order 2');
+% % legend;
 
 % Lotka-Volterra 3D
 % C = @(z) log(z(1)) + log(z(2)) + log(z(3));
