@@ -1,7 +1,13 @@
-function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_name, T, z0, h)
-  % gamma constant
-  % A b const
-  % phi phi0 const
+function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_name, T, z0, h, tol)
+  % N nonlinear part
+  % gamma scalar function of t
+  % intgamma is \int_a^b gamma(t) dt, function of a,b
+  % method_name is a name of a method currently supported (check
+  % method_generator.m)
+  % T = [t0 tf]
+  % z0 is IC
+  % h is step size
+  % tol, tolerance
   
   time     = T(1):h:T(2);
   time     = time';
@@ -10,18 +16,13 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
   dim      = size(z0,2);
   sol      = zeros(steps, dim);
   sol(1,:) = z0;
-  %function_calls = 0; % used to count how many times f(x) is called
   epsilon = 1e-14;
-%   gamma_is_diag = false
-%   
-%   if (isdiag(gamma(0)))
-%       gamma_is_diag = true;
-%   end
   
   % TODO: Check that all input satisfy the criteria needed, e.g., sum b_i = 1
   [A_t, b_t, ~, phi_t, phi0_t] = method_generator(method_name, intgamma, h);
   
-  function_calls = zeros(steps-1, 1);
+  function_calls = zeros(steps, 1); % store function calls at each time step
+  
   for i = 1:steps-1
       A = A_t(time(i));
       b = b_t(time(i));
@@ -31,14 +32,14 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
       k_prev = zeros(stages, dim);
       
       % initiate stage values with a "good guess"
-    Ftz = N(time(i), sol(i,:)) - gamma(time(i)) * sol(i,:)'; % f(t,z) evaluated at the previous timestep
-
+      Ftz = N(time(i), sol(i,:)) - gamma(time(i)) * sol(i,:)'; % f(t,z) evaluated at the previous timestep
       function_calls(i) = function_calls(i) + 1;
+      
       for j = 1:stages
         k_prev(j,:) = Ftz;
       end
       
-      k = k_prev + ones(stages,dim); % allow us to enter looop
+      k = k_prev + (2*epsilon) * ones(stages,dim); % allow us to enter loop
       
       % iterate for better k_i
       while (any(abs(k - k_prev) >= epsilon))
@@ -57,6 +58,7 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
   end
 end
 
+% k_{n+1} = f(k_n), iterate until k* ~= f(k*)
 function [knew, fevals] = k_iterate(N, tn, zn, h, kn, A, phi)
     stages = size(kn,1);
     dim = size(kn,2);

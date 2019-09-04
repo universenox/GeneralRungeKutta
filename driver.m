@@ -73,6 +73,7 @@
 % PDEs
 % Damped one-way wave equation
 h = 0.025; t0 = 0; tf = 45;
+t = t0:h:tf;
 a = 1/2; % is gamma
 b = 0; m = 2;
 
@@ -96,12 +97,13 @@ N = @(tn, z) -ddx * z';
 gamma = @(t) 1/2;
 intgamma = @(a,b) 1/2 * (b-a);
 
+% shrodinger & wave eqn
 
 % ----------------------------- evaluation -------------------------------%
-
-[~, z2, ~] = exponentialRK(N, gamma, intgamma, 'GL2', [t0 tf], z0, h);
-% [~, z4, ~] = exponentialRK(N, gamma, intgamma, 'GL4', [t0 tf], z0, h);
-% [~, z6, ~] = exponentialRK(N, gamma, intgamma, 'GL6', [t0 tf], z0, h);
+tol = 1e-14;
+[~, z2, fc2] = exponentialRK(N, gamma, intgamma, 'GL2', [t0 tf], z0, h, tol);
+% [~, z4, fc4] = exponentialRK(N, gamma, intgamma, 'GL4', [t0 tf], z0, h, tol);
+% [~, z6, fc6] = exponentialRK(N, gamma, intgamma, 'GL6', [t0 tf], z0, h, tol);
 
 % hs = [.01:.01:.1]; % we'll try these h's to make our graphs w.r.t step size
 % err_step = zeros(3,size(hs, 2)); % 3 methods stages 1,2,3, and n step sizes
