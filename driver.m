@@ -40,70 +40,52 @@
 % gamma = @(tn) J;
 % intgamma = @(a,b) J * (b-a);
 
-% % Lotka Volterra 3d System
-% z0 = [.1 .01 .001];
-% h=.5;
-% t0 = 0; tf = 500; t = t0:h:tf;
-% %PARAMETER VALUES
-% a = 1; b = a; c = a; % alpha = 0.02; beta = 0.015; delta = 0.0001;
-% %G = [beta-delta;delta-alpha;alpha-beta]
-% G = [0.025;-0.02;0.0001];
-% 
-% B1 = @(z) [0 a*z(1)*z(2) -b*z(1)*z(3); -a*z(1)*z(2) 0 c*z(2)*z(3); b*z(1)*z(3) -c*z(2)*z(3) 0];
-% % B2 = [0 -1 1; 1 0 -1; -1 1 0];
-% % H2 = @(z) = z(1) * z(2) * z(3);
-% J = diag(G);
-% 
-% N = @(tn,z) B1(z)*[1;1;1];
-% gamma = @(tn) J;
-% intgamma = @(a,b) J * (b-a);
-
-% % Rigid Body 3D System
-% z0 = [cos(1.1),0,sin(1.1)];
-% h=.5;
-% t0 = 0; tf = 250;
-% I1 = 2; I2 = 1; I3 = 2/3; epsilon = .1;
-% M = @(z) [0, z(3)/I3, -z(2)/I2;
-%     -z(3)/I3 0 z(1)/I1;
-%     z(2)/I2 -z(1)/I1 0];
-% gamma = @(t) epsilon/2 * cos(2 * t);
-% intgamma = @(a,b) epsilon/4 * (sin(2*b) - sin(2*a));
-% N = @(tn,z) M(z) * z';
+% Rigid Body 3D System
+z0 = [cos(1.1),0,sin(1.1)];
+h=.5;
+t0 = 0; tf = 250;
+I1 = 2; I2 = 1; I3 = 2/3; epsilon = .1;
+M = @(z) [0, z(3)/I3, -z(2)/I2;
+    -z(3)/I3 0 z(1)/I1;
+    z(2)/I2 -z(1)/I1 0];
+gamma = @(t) epsilon/2 * cos(2 * t);
+intgamma = @(a,b) epsilon/4 * (sin(2*b) - sin(2*a));
+N = @(tn,z) M(z) * z';
 
 % PDEs
-% Damped one-way wave equation
-h = 0.025; t0 = 0; tf = 45;
-t = t0:h:tf;
-a = 1/2; % is gamma
-b = 0; m = 2;
-
-dx = 0.04;
-% u(x,0)
-zx0 = @(x) cos(2*m*pi*x);
-% assume periodic boundary conditions
-% u(0, t) = u(L,t)
-xrange = 0:dx:1-dx;
-z0(:) = zx0(xrange(:));
-
-n = size(z0,2);
-nOnes = ones(n,1);
-Dp = (diag(-1 * nOnes, 0) + diag(nOnes(1:n-1), 1));
-Dp(n,1) = 1;
-Dm = -Dp';
-ddx = (Dp + Dm) ;
-ddx = ddx * (1/(2*dx));
-N = @(tn, z) -ddx * z';
-
-gamma = @(t) 1/2;
-intgamma = @(a,b) 1/2 * (b-a);
+% % Damped one-way wave equation
+% h = 0.025; t0 = 0; tf = 45;
+% t = t0:h:tf;
+% a = 1/2; % is gamma
+% b = 0; m = 2;
+% 
+% dx = 0.04;
+% % u(x,0)
+% zx0 = @(x) cos(2*m*pi*x);
+% % assume periodic boundary conditions
+% % u(0, t) = u(L,t)
+% xrange = 0:dx:1-dx;
+% z0(:) = zx0(xrange(:));
+% 
+% n = size(z0,2);
+% nOnes = ones(n,1);
+% Dp = (diag(-1 * nOnes, 0) + diag(nOnes(1:n-1), 1));
+% Dp(n,1) = 1;
+% Dm = -Dp';
+% ddx = (Dp + Dm) ;
+% ddx = ddx * (1/(2*dx));
+% N = @(tn, z) -ddx * z';
+% 
+% gamma = @(t) 1/2;
+% intgamma = @(a,b) 1/2 * (b-a);
 
 % shrodinger & wave eqn
 
 % ----------------------------- evaluation -------------------------------%
 tol = 1e-14;
-[~, z2, fc2] = exponentialRK(N, gamma, intgamma, 'GL2', [t0 tf], z0, h, tol);
-% [~, z4, fc4] = exponentialRK(N, gamma, intgamma, 'GL4', [t0 tf], z0, h, tol);
-% [~, z6, fc6] = exponentialRK(N, gamma, intgamma, 'GL6', [t0 tf], z0, h, tol);
+[~, z2, fc2] = exponentialRK(N, gamma, intgamma, 'ERK-GL2', [t0 tf], z0, h, tol);
+% [~, z4, fc4] = exponentialRK(N, gamma, intgamma, 'ERK-GL4', [t0 tf], z0, h, tol);
+% [~, z6, fc6] = exponentialRK(N, gamma, intgamma, 'ERK-GL6', [t0 tf], z0, h, tol);
 
 % hs = [.01:.01:.1]; % we'll try these h's to make our graphs w.r.t step size
 % err_step = zeros(3,size(hs, 2)); % 3 methods stages 1,2,3, and n step sizes

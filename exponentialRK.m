@@ -39,10 +39,10 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
         k_prev(j,:) = Ftz;
       end
       
-      k = k_prev + (2*epsilon) * ones(stages,dim); % allow us to enter loop
+      k = k_prev + (2*tol) * ones(stages,dim); % allow us to enter loop
       
       % iterate for better k_i
-      while (any(abs(k - k_prev) >= epsilon))
+      while (any(abs(k - k_prev) >= tol))
           k_prev = k;
           [k, fevals] = k_iterate(N, time(i), sol(i,:), h, k, A, phi);
           function_calls(i) = function_calls(i) + fevals;

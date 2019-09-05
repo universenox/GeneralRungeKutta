@@ -7,22 +7,22 @@ t = t';
 % exact solution
 % sol = @(t) A * exp(-a*t/2) * exp(1i*gamma(t)*abs(A)^2*((1-exp(-a*t))/a));
 
-% Damped one-way wave equation
-% Exact Solutions
-sol = @(t) exp(-gamma(t)*t)*cos(2*m*pi*(xrange-t));
-
-% movie of our solution, stepping through the time steps
-for j = 1:size(t,1)
-    ti = j*h;
-%     UEx = exp(-b*x).*cos(2*pi*(x-ti));
-    clf;
-    plot(xrange,z2(j,:),'DisplayName', 'ERK-GL2')
-    hold on;
-    plot(xrange, sol(ti), 'DisplayName', 'Exact')
-    legend;
-    M(j) = getframe;
-end
-movie(M)
+% % Damped one-way wave equation
+% % Exact Solutions
+% sol = @(t) exp(-gamma(t)*t)*cos(2*m*pi*(xrange-t));
+% 
+% % movie of our solution, stepping through the time steps
+% for j = 1:size(t,1)
+%     ti = j*h;
+% %     UEx = exp(-b*x).*cos(2*pi*(x-ti));
+%     clf;
+%     plot(xrange,z2(j,:),'DisplayName', 'ERK-GL2')
+%     hold on;
+%     plot(xrange, sol(ti), 'DisplayName', 'Exact')
+%     legend;
+%     M(j) = getframe;
+% end
+% movie(M)
 
 
 % 
@@ -51,47 +51,32 @@ movie(M)
 % C0 = C(z0);
 % plot(t(2:size(t,1)),C(2:size(t,1)), 'DisplayName', 'casimir deriv');
 
-% % Rigid Body 3D
+% Rigid Body 3D
 % I1 = 2; I2 = 1; I3 = 2/3;
-% % plot3(u2(:,1),u2(:,2),u2(:,3))
-% H = @(z) 1/2 * (z(1)^2/I1 + z(2)^2/I2 + z(3)^2/I3);
-% Cs = @(z) z(:,1).^2 + z(:,2).^2 + z(:,3).^2;
-% Hs = @(z) 1/2 * (z(:,1).^2/I1 + z(:,2).^2/I2 + z(:,3).^2/I3);
-% H0 = Hs(z0);
-% C0 = Cs(z0);
-% 
-% figure(1); clf;
-% plot(t, Hs(z2) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
-% plot(t, Cs(z2) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
-% title('2nd order')
-% xlabel('t'); legend;
-% 
-% figure(2); clf;
-% plot(t, Hs(z4) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
-% plot(t, Cs(z4) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
-% title('4th order,')
-% xlabel('t'); legend;
-% 
-% figure(3); clf;
-% plot(t, Hs(z6) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
-% plot(t, Cs(z6) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
-% title('6th order')
-% xlabel('t'); legend;
+% plot3(u2(:,1),u2(:,2),u2(:,3))
+H = @(z) 1/2 * (z(1)^2/I1 + z(2)^2/I2 + z(3)^2/I3);
+Cs = @(z) z(:,1).^2 + z(:,2).^2 + z(:,3).^2;
+Hs = @(z) 1/2 * (z(:,1).^2/I1 + z(:,2).^2/I2 + z(:,3).^2/I3);
+H0 = Hs(z0);
+C0 = Cs(z0);
 
+figure(1); clf;
+plot(t, Hs(z2) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
+plot(t, Cs(z2) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
+title('2nd order')
+xlabel('t'); legend;
 
+figure(2); clf;
+plot(t, Hs(z4) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
+plot(t, Cs(z4) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
+title('4th order,')
+xlabel('t'); legend;
 
-% % exact DHO
-% B = @(t) sqrt(w^2 - gamma(t)^2);
-% A = @(t) [cos(B(t) * t) + gamma(t)/B(t) * sin(B(t) * t), 1/B(t) * sin(B(t) * t);
-%           -w^2 / B(t) * sin(B(t)*t), cos(B(t) * t) - gamma(t)/B(t) * sin(B(t)*t)];
-% qp = zeros(size(z2));
-% for i = 1 : size(t,1)
-%     qp(i,:) = exp(-gamma(t(i)) * t(i)) * A(t(i)) * z0';
-% end
-% plot(t, qp(:,1) - z2(:,1))
-% title('DHO err')
-% ylabel('err')
-% xlabel('t')
+figure(3); clf;
+plot(t, Hs(z6) - H0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'H err'); hold on;
+plot(t, Cs(z6) - C0 * exp(-epsilon/2 * sin(2*t(:))), 'DisplayName', 'C err');
+title('6th order')
+xlabel('t'); legend;
 
 % Damped Harmonic Oscillator Dissipation,
 % See Fig. 3, Bhatt Floyd Moore '16 J. Sci. Comput
@@ -108,11 +93,6 @@ movie(M)
 %title('abs err, implicitRK')
 %ylabel('abs err')
 %xlabel('t')legend
-
-% plot(t, u2(:,1))
-% hold on
-% plot(t, u4(:,1))
-% plot(t, sin(t))
 
 % loglog(hs, err_step(1,:), 'DisplayName', '1-stage');
 % hold on
