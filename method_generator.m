@@ -1,5 +1,30 @@
 function [A,b,c,phi,phi0] = method_generator(method_name, intgamma, h) 
     switch(method_name)
+        case 'RK4'
+            A = [0  0  0
+                 .5 0  0
+                 0  .5 0
+                 0  0  1];
+             b = [1/6 1/3 1/3 1/6];
+             c = [0; 1/2; 1/2; 1];
+             phi = 0; phi0 = 0;
+             
+        case 'Heun'
+            A = [0 0
+                 1 0];
+            b = [1/2 1/2];
+            c = [0;1];
+            phi = 0;
+            phi0 = 0;
+             
+        case 'Ralston' % Sometimes called Heun's
+            A = [0 0
+                 2/3 0];
+            b = [1/4 3/4];
+            c = [0; 2/3];
+            phi = 0;
+            phi0=0;
+            
         case 'GL2'
             A = [1/2];
             b = [1];

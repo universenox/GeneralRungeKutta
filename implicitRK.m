@@ -6,16 +6,15 @@ function [time, sol, function_calls] = implicitRK(f, method_name, T, u0, h, tol)
   % f is a f(t,u) = du/dt (it's ok if there is no time dependence, just let
   % it have that format) where u and f(t,u) are vertical vectors.
   
+  % method_name gives us:
   % A is the Runge-Kutta matrix
   % b is the horizontal vector of weights
   
   % T is [t0 tf]; the solution is found in the interval between t0 (starting time) and tf (final time).
   % u0 is row vector u(t0).
   % h is the step size
+  % tol is tolerance for iterations
 
-  % we also have a value epsilon in here that we may want to let be an
-  % input variable
-  
   [A,b,c,~,~] = method_generator(method_name);
   
   time     = T(1):h:T(2);
