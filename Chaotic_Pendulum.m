@@ -1,10 +1,15 @@
-t0 = 0; tf = 285; 
+t0 = 0; tf = 1000; 
 z0 = [0 10];
 
 % Chaotic pendulum
 % h_ERK = 2*pi/22;
-h_ERK = 0.3;
-h_explicit = 0.015;
+h_ERK = .01;
+h_explicit = .1;
+% h_ERK = 0.2;
+% h_explicit = 0.0336;
+
+% h_ERK = 0.3;
+% h_explicit = 0.0425;
 
 tE = t0:h_ERK:tf;
 tP = t0:h_explicit:tf;

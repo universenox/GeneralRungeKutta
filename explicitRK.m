@@ -26,8 +26,8 @@ function [time, sol, function_calls] = explicitRK(f, method_name, T, u0, h)
   sol(1,:) = u0;
   
   % TODO: Check that all input satisfy the criteria needed, e.g., sum b_i = 1
-function_calls = zeros(steps-1, 1);
- for i = 2:steps-1
+function_calls = zeros(steps, 1);
+ for i = 2:steps
       ks = zeros(stages, dim);
       ks(1,:) = f(time(i-1), sol(i-1,:));
       function_calls(i,1) = function_calls(i,1) + 1;

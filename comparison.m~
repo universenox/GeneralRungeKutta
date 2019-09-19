@@ -1,15 +1,15 @@
-tol = 1e-13;
+tol = 1e1;
 
 % Evaluation
 tStart = tic; 
-[~, ez2, efc2] = exponentialRK(N, gamma, intgamma, 'ERK-GL4', [t0 tf], z0, h_ERK, tol);
+[~, ez2, efc2] = exponentialRK(N, gamma, intgamma, 'ERK-GL2', [t0 tf], z0, h_ERK, tol);
 tElapsed_ERK = toc(tStart);
 
 sefc2 = sum(efc2)
 
 % --------------------------------Explicit vs ERK--------------------------
 tStart = tic;
-[~, pz2, pfc2] = explicitRK(f, 'RK4', [t0 tf], z0, h_explicit);
+[~, pz2, pfc2] = explicitRK(f, 'Ralston', [t0 tf], z0, h_explicit);
 tElapsed_explicit = toc(tStart);
 
 spfc2 = sum(pfc2)
@@ -18,7 +18,7 @@ if (sum(efc2) > sum(pfc2))
 else
     fprintf('ERK method used %f percent less function calls than explicit RK\n', 100*((sum(pfc2)-sum(efc2))/sum(pfc2)));
 end
-% ------------------------------------------------------------ralston-----------
+% -----------------------------------------------------------------------
 
 % -------------------------Implicit vs ERK---------------------------------
 % tStart = tic;
@@ -34,18 +34,18 @@ end
 
 % Check chaos
 figure(1); clf;
-subplot(2,1,1); plot(ez2(:,1), ez2(:,2), 'DisplayName', 'ERK-GL6'); legend;
+subplot(2,1,1); plot(ez2(:,1), ez2(:,2), 'DisplayName', 'ERK-GL2'); legend;
 xlabel('q');
 ylabel('p');
-title('ddd')
-subplot(2,1,2); plot(pz2(:,1), pz2(:,2), 'DisplayName', 'RK4'); legend;
+title('h = .3, tol = 10, 11,575 function calls')
+subplot(2,1,2); plot(pz2(:,1), pz2(:,2), 'DisplayName', 'ralston'); legend;
 xlabel('q');
 ylabel('p');
-title('ddd')
+title('h=.3, 6,666 function calls')
 
-% Abs Error
+% % Abs Error
 % figure(1); clf;
-% semilogy(tT, abs(pz2(:,1) - solT(:,1)), 'DisplayName', 'GL2'); hold on;
+% semilogy(tT, abs(z2(:,1) - solT(:,1)), 'DisplayName', 'GL2'); hold on;
 % semilogy(tE, abs(ez2(:,1) - solE(:,1)), 'DisplayName', 'ERK');
 % ylabel('Absolute error');
 % xlabel('time');
