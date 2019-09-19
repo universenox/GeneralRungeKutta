@@ -63,14 +63,6 @@ function [A,b,c,phi,phi0] = method_generator(method_name, intgamma, h)
             phi = @(tn) [[exp(-intgamma(tn, tn + c(1)*h))]
                           [exp(-intgamma(tn, tn + c(2)*h))]];
             phi0 = @(tn) [exp(-intgamma(tn, tn + h))];
-            
-%             c = [1/2 - sqrt(3)/6; 1/2 + sqrt(3)/6];
-%             A = @(tn) [1/4, (1/4 - sqrt(3)/6)*exp(intgamma(tn + c(1)*h, tn + c(2)*h));
-%                         (1/4 + sqrt(3)/6)*exp(intgamma(tn + c(2)*h, tn + c(1)*h)), 1/4];
-%             b = @(tn) [(1/2) * exp(-intgamma(tn + c(1)*h, tn + h)), (1/2) * exp(-intgamma(tn + c(2)*h, tn + h))];
-%             phi = @(tn) [[exp(-intgamma(tn, tn + c(1)*h))]
-%                           [exp(-intgamma(tn, tn + c(2)*h))]];
-%             phi0 = @(tn) [exp(-intgamma(tn, tn + h))];
 
         case 'ERK-GL6'
             c = [1/2 - sqrt(15)/10; 1/2; 1/2 + sqrt(15)/10];

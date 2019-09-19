@@ -1,15 +1,15 @@
-tol = 1e-13;
+tol = 1e-2;
 
 % Evaluation
 tStart = tic; 
-[~, ez2, efc2] = exponentialRK(N, gamma, intgamma, 'ERK-GL4', [t0 tf], z0, h_ERK, tol);
+[te2, ez2, efc2] = exponentialRK(N, gamma, intgamma, 'ERK-GL4', [t0 tf], z0, h_ERK, tol);
 tElapsed_ERK = toc(tStart);
 
 sefc2 = sum(efc2)
 
 % --------------------------------Explicit vs ERK--------------------------
 tStart = tic;
-[~, pz2, pfc2] = explicitRK(f, 'RK4', [t0 tf], z0, h_explicit);
+[tp2, pz2, pfc2] = explicitRK(f, 'RK4', [t0 tf], z0, h_explicit);
 tElapsed_explicit = toc(tStart);
 
 spfc2 = sum(pfc2)
@@ -34,7 +34,7 @@ end
 
 % Check chaos
 figure(1); clf;
-subplot(2,1,1); plot(ez2(:,1), ez2(:,2), 'DisplayName', 'ERK-GL6'); legend;
+subplot(2,1,1); plot(ez2(:,1), ez2(:,2), 'DisplayName', 'ERK-GL4'); legend;
 xlabel('q');
 ylabel('p');
 title('ddd')
