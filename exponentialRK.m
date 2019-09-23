@@ -19,7 +19,7 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
   epsilon = 1e-14;
   
   % TODO: Check that all input satisfy the criteria needed, e.g., sum b_i = 1
-  [A_t, b_t, ~, phi_t, phi0_t] = method_generator(method_name, intgamma, h);
+  [A_t, b_t, c, phi_t, phi0_t] = method_generator(method_name, intgamma, h);
   
   function_calls = zeros(steps, 1); % store function calls at each time step
   
@@ -44,7 +44,7 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
       % iterate for better k_i
       while (any(abs(k - k_prev) >= tol))
           k_prev = k;
-          [k, fevals] = k_iterate(N, time(i), sol(i,:), h, k, A, phi);
+          [k, fevals] = k_iterate(N, time(i), sol(i,:), h, k, A, c, phi);
           function_calls(i) = function_calls(i) + fevals;
       end
          
@@ -59,7 +59,7 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
 end
 
 % k_{n+1} = f(k_n), iterate until k* ~= f(k*)
-function [knew, fevals] = k_iterate(N, tn, zn, h, kn, A, phi)
+function [knew, fevals] = k_iterate(N, tn, zn, h, kn, A, c, phi)
     stages = size(kn,1);
     dim = size(kn,2);
     knew = zeros(stages,dim);
@@ -71,7 +71,7 @@ function [knew, fevals] = k_iterate(N, tn, zn, h, kn, A, phi)
           sum_part = sum_part + A(i,j) * kn(j,:); 
        end
         
-       knew(i, :) = N(tn, phi(i) * zn + h * sum_part);
+       knew(i, :) = N(tn + c(i)*h, phi(i) * zn + h * sum_part);
        fevals = fevals + 1;
     end
 end

@@ -70,7 +70,7 @@ function [knew, fevals] = k_iterate(f, tn, un, h, kn, c, A)
           sum_aij_kj = sum_aij_kj + A(i,j) * kn(j,:); 
        end
         
-       knew(i, :) = f(tn + c(i), un + h * sum_aij_kj);
+       knew(i, :) = f(tn + c(i)*h, un + h * sum_aij_kj);
        fevals = fevals + 1;
     end
 end
