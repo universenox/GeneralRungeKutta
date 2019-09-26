@@ -1,13 +1,15 @@
 % % DHO 1, const gamma, const omega
-% t0 = 0; tf = 100; 
-% z0 = [0 10]; tol = 1e-14;
+% t0 = 0; tf = 1000; 
+% z0 = [0 10]; 
 % 
-% h_ERK = .01; tE=t0:h_ERK:tf;
-% h_trad = 0.008; tT=t0:h_trad:tf;
+% h_ERK = .1; tE=t0:h_ERK:tf;
+% h_imp = 0.45; tI=t0:h_imp:tf;
+% h_explicit = 0.008; tP = t0:h_explicit:tf;
+% 
 % 
 % w = 1;
-% gamma = @(t) 0.005;
-% intgamma = @(a,b) .005 * (b - a); % integral of gamma from a to b
+% gamma = @(t) 0.001;
+% intgamma = @(a,b) .001 * (b - a); % integral of gamma from a to b
 % 
 % % Exp version
 % N = @(tn, z) [z(2) + gamma(tn) * z(1); -w^2 * z(1) - gamma(tn) * z(2)];
@@ -25,19 +27,19 @@
 %     solE(i,:) = exp(-gamma(tE(i)) * tE(i)) * A(tE(i)) * z0';
 % end
 % 
-% solT = zeros(size(tT,2),size(z0,2));
-% for i = 1 : size(tT,2)
-%     solT(i,:) = exp(-gamma(tT(i)) * tT(i)) * A(tT(i)) * z0';
+% solI = zeros(size(tI,2),size(z0,2));
+% for i = 1 : size(tI,2)
+%     solI(i,:) = exp(-gamma(tI(i)) * tI(i)) * A(tI(i)) * z0';
 % end
-% 
 
-% DHO 2 
-t0 = 0; tf = 10000; 
+
+% DHO 2 -- damped driven
+t0 = 0; tf = 1000; 
 z0 = [0 10]; 
 
 h_ERK = .2; tE=t0:h_ERK:tf;
-h_trad = 0.2; tT=t0:h_trad:tf;
-h_explicit = 0.2;
+h_imp = 0.2; tI=t0:h_imp:tf;
+h_explicit = 0.065; tP = t0:h_explicit:tf;
 
 w = 1;
 gamma_0 = .01;
@@ -52,4 +54,6 @@ f = @(tn,z) [z(2); -w^2*z(1) - 2*gamma(tn)*z(2)];
 sol2 = @(t) cosh(gamma_0 * t).^(-1) .* (z0(1)*cos(sqrt(w^2 - gamma(t).^2).*t)...
             + sqrt(w^2 + gamma(t).^2)*z0(2) .* sin(sqrt(w^2-gamma(t).^2).*t));
 solE = sol2(tE)';
-solT = sol2(tT)';
+solP = sol2(tP)';
+
+Harmonic_Comparison;
