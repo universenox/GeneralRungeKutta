@@ -42,7 +42,7 @@ h_imp = 0.2; tI=t0:h_imp:tf;
 h_explicit = 0.065; tP = t0:h_explicit:tf;
 
 w = 1;
-gamma_0 = .01;
+gamma_0 = .001;
 gamma = @(t) 2*gamma_0 * tanh(gamma_0*t);
 intgamma = @(a,b) 2*(log(abs(cosh(gamma_0*b))) - log(abs(cosh(gamma_0*a))));
 

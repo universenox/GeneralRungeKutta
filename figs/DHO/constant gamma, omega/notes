@@ -1,3 +1,5 @@
 if w is too big, get wild inaccuracy.
 order > 2 seems broken. (DHO, chaotic HO)
+for the damped-driven problem, ERK version seems to go out of phase faster -- because my h's are much bigger.
+
 
