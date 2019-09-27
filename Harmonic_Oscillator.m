@@ -34,7 +34,7 @@
 
 
 % DHO 2 -- damped driven
-t0 = 0; tf = 1000; 
+t0 = 0; tf = 5000; 
 z0 = [0 10]; 
 
 h_ERK = .2; tE=t0:h_ERK:tf;
@@ -42,9 +42,9 @@ h_imp = 0.2; tI=t0:h_imp:tf;
 h_explicit = 0.065; tP = t0:h_explicit:tf;
 
 w = 1;
-gamma_0 = .001;
-gamma = @(t) 2*gamma_0 * tanh(gamma_0*t);
-intgamma = @(a,b) 2*(log(abs(cosh(gamma_0*b))) - log(abs(cosh(gamma_0*a))));
+gamma_0 = 0.001;
+gamma = @(t) gamma_0 * tanh(gamma_0*t);
+intgamma = @(a,b) (log(abs(cosh(gamma_0*b))) - log(abs(cosh(gamma_0*a))));
 
 % Exp version
 N = @(tn, z) [z(2) + gamma(tn) * z(1); -w^2 * z(1) - gamma(tn) * z(2)];
@@ -55,5 +55,6 @@ sol2 = @(t) cosh(gamma_0 * t).^(-1) .* (z0(1)*cos(sqrt(w^2 - gamma(t).^2).*t)...
             + sqrt(w^2 + gamma(t).^2)*z0(2) .* sin(sqrt(w^2-gamma(t).^2).*t));
 solE = sol2(tE)';
 solP = sol2(tP)';
+solI = sol2(tI)';
 
 Harmonic_Comparison;
