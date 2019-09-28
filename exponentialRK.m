@@ -12,14 +12,13 @@ function [time, sol, function_calls] = exponentialRK(N, gamma, intgamma, method_
   time     = T(1):h:T(2);
   time     = time';
   steps    = numel(time);
-  stages   = size(gamma(0),1); 
   dim      = size(z0,2);
   sol      = zeros(steps, dim);
   sol(1,:) = z0;
-  epsilon = 1e-14;
   
   % TODO: Check that all input satisfy the criteria needed, e.g., sum b_i = 1
   [A_t, b_t, c, phi_t, phi0_t] = method_generator(method_name, intgamma, h);
+  stages   = size(A_t(0),1);
   
   function_calls = zeros(steps, 1); % store function calls at each time step
   
