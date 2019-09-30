@@ -2,7 +2,7 @@ tol = 1e-8;
 
 % Evaluation
 tStart = tic; 
-erk_method_name = 'ERK-GL4';
+erk_method_name = 'ERK-GL2';
 [te2, ez2, efc2] = exponentialRK(N, gamma, intgamma, erk_method_name, [t0 tf], z0, h_ERK, tol);
 tElapsed_ERK = toc(tStart);
 sefc2 = sum(efc2)

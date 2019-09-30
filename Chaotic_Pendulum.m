@@ -1,8 +1,8 @@
-t0 = 0; tf = 400; 
+t0 = 0; tf = 1000; 
 z0 = [0 5];
 
 % Chaotic pendulum
-h_ERK = 2*pi/22;
+h_ERK = 2*pi / 22;
 % h_ERK = .01;
 h_explicit = .1;
 % h_ERK = 0.2;
@@ -26,4 +26,4 @@ N = @(tn, z) [z(2) + gamma(tn) * z(1); -a^2*sin(z(1)) + fd*sin(tn)-gamma(tn)*z(2
 % trad version
 f = @(tn,z) [z(2); -a^2*sin(z(1))+fd*sin(tn)-2*gamma(tn)*z(2)];
 
-comparison;
+Chaotic_Comparison;
